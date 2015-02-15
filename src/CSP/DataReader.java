@@ -10,8 +10,8 @@ public class DataReader {
 	private static String inputFile;
 	private ArrayList<Item> items;
 	private ArrayList<Bag> bags;
-	private int fitLimitMin;
-	private int fitLimitMax;
+	private static int fitLimitMin;
+	private static int fitLimitMax;
 	
 	/*
 	 * Constructor.
@@ -96,10 +96,18 @@ public class DataReader {
 			System.out.println("\t" + b.getName() + " " + b.getWeightCapacity());
 		}
 		
-		System.out.println("Min: " + this.fitLimitMin);
-		System.out.println("Max: " + this.fitLimitMax);
+		System.out.println("Min: " + fitLimitMin);
+		System.out.println("Max: " + fitLimitMax);
 	}
 
+	public static int getFitLimitMin() {
+		return fitLimitMin;
+	}
+	
+	public static int getFitLimitMax() {
+		return fitLimitMax;
+	}
+	
 	/*
 	 * Entry point of program.
 	 */

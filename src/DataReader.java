@@ -1,56 +1,77 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DataReader {
 	
 	private static String inputFile;
-	private static int numBags = 0;
+	private ArrayList<Item> items;
+	private ArrayList<Bag> bags;
+	private int fitLimitMin;
+	private int fitLimitMax;
 	
-	public static void readData() {
+	/*
+	 * Constructor.
+	 */
+	public DataReader () {
+		items = new ArrayList<Item>();
+		bags = new ArrayList<Bag>();
+	}
+
+	/*
+	 * Process and parse input file.
+	 */
+	public void readData() {
 		BufferedReader br;
 		int numLines = 0;
 		try{
 			br = new BufferedReader(new FileReader(inputFile));
 			String thisLine = null;
 			int typeNum = 0;
-			
+
 			while( (thisLine = br.readLine()) != null) {
-				System.out.println(thisLine);
 				numLines++;
+				String splitLine[] = thisLine.split(" ");
 
 				if(thisLine.charAt(0) == '#') {
 					typeNum++;
 				}
 				else if(typeNum == 1) {
-					numBags++;
+					// Items
+					items.add(new Item(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
 				}
 				else if(typeNum == 2) {
-					System.out.println("Values");
+					// Bags
+					bags.add(new Bag(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
 				}
 				else if(typeNum == 3) {
-					System.out.println("Fitting Limits");
+					// Fit limit values
+					fitLimitMin = Integer.parseInt(splitLine[0]);
+					fitLimitMax = Integer.parseInt(splitLine[1]);
 				}
 				else if(typeNum == 4) {
-					System.out.println("unary inclusive");
+					// Unary inclusive
 				}
 				else if(typeNum == 5) {
-					System.out.println("unary exclusive");
+					// Unary exclusive
 				}
 				else if(typeNum == 6) {
-					System.out.println("Binary Equals");
+					// Binary Equals
 				}
 				else if(typeNum == 7) {
-					System.out.println("Binary Not Equals");
+					// Binary Not Equals
 				}
 				else if(typeNum == 8) {
-					System.out.println("Mutual Exclusive");
+					// Mutual Exclusive
 				}
 			}
+			
 			if(numLines == 8) {
 				System.out.println("There is no problem specified!");
 				System.exit(-1);
 			}
+			
 			br.close();
 		}
 		catch(IOException e) {
@@ -58,18 +79,38 @@ public class DataReader {
 		}
 	}
 	
-	
-public static void main(String[] args) {
-	if(args.length != 1) {
-		System.out.println("Incorrect number of command line arguments");
-		System.exit(-1);
+	/*
+	 * Print function for debug purposes.
+	 * Simply print data received from file.
+	 */
+	public void printData () {
+		System.out.println("Item: ");
+		for(Item i : items) {
+			System.out.println("\t" + i.getName() + " " + i.getWeight());
+		}
+		
+		System.out.println("Bag: ");
+		for(Bag b : bags) {
+			System.out.println("\t" + b.getName() + " " + b.getWeightCapacity());
+		}
+		
+		System.out.println("Min: " + this.fitLimitMin);
+		System.out.println("Max: " + this.fitLimitMax);
 	}
-	
-	inputFile = args[0];
-	System.out.println(inputFile);
-	readData();
-	System.out.println(numBags);
-}
 
-	
+	/*
+	 * Entry point of program.
+	 */
+	public static void main(String[] args) {
+		if(args.length != 1) {
+			System.out.println("Incorrect number of command line arguments");
+			System.exit(-1);
+		}
+
+		inputFile = args[0];
+		
+		DataReader dReader = new DataReader();
+		dReader.readData();
+		dReader.printData();
+	}
 }

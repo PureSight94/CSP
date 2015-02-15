@@ -13,7 +13,7 @@ public class EqualBinary implements IConstraint {
 	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

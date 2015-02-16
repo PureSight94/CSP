@@ -53,6 +53,8 @@ public class DataReader {
 	*/
 	/*
 	 * Process and parse input file.
+	 * Reads in the file line by line and adds each variable and value to their respective classes.
+	 * Adds each constraint to its respective Constraint list
 	 */
 	public void readData() {
 		BufferedReader br;
@@ -124,7 +126,11 @@ public class DataReader {
 				}
 				else if(typeNum == 8) {
 					// Mutual Exclusive
-					
+					Item i1 = getItemByName(splitLine[0].charAt(0));
+					Item i2 = getItemByName(splitLine[1].charAt(0));
+					Bag b1 = getBagByName(splitLine[2].charAt(0));
+					Bag b2 = getBagByName(splitLine[3].charAt(0));
+					MEB.add(new MutualExclusiveBinary(i1, i2, b1, b2));
 				}
 			}
 			

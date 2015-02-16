@@ -4,9 +4,9 @@ package CSP;
  *
  */
 public class Item {
-	private char name;
-	private int weight;
-	private Bag location;
+	private char name;		//CSP variables (upper case letters)
+	private int weight;		//The weight of this item
+	private Bag location;	//The Bag in which this item is in
 	
 	public Item (char name, int weight) {
 		this.name = name;
@@ -14,6 +14,7 @@ public class Item {
 		location = null;
 	}
 	
+	//Getters
 	public char getName () {
 		return name;
 	}
@@ -26,6 +27,7 @@ public class Item {
 		return this.location;
 	}
 	
+	//Setters
 	public void setBag(Bag newBag) {
 		this.location = newBag;
 	}

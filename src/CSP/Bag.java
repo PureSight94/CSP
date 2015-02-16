@@ -8,10 +8,10 @@ import java.util.ArrayList;
  *
  */
 public class Bag {
-	private char name;
-	private int weightCapacity;
-	private int currentWeight;
-	private ArrayList<Item> items;
+	private char name;					//The name of this bag (lower case letters, values)
+	private int weightCapacity;			//The maximum allowed weight this bag can have
+	private int currentWeight;			//The current total weight of this bag
+	private ArrayList<Item> items;		//The current list of items in this bag
 	
 	public Bag (char name, int weightCapacity) {
 		this.name = name;

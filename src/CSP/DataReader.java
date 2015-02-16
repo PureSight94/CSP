@@ -146,6 +146,11 @@ public class DataReader {
 				System.exit(-1);
 			}
 			
+			//If there was no fitLimits specified, make the max the total number of items + 1
+			if(fitLimitMin == 0 && fitLimitMax == 0) {
+				fitLimitMin = 0;
+				fitLimitMax = items.size();
+			}
 			br.close();
 			
 			

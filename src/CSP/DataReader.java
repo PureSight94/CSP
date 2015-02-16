@@ -52,6 +52,14 @@ public class DataReader {
 		return null;
 	}
 	
+	public ArrayList<Bag> getBag() {
+		return bags;
+	}
+	
+	public ArrayList<Item> getItem() {
+		return items;
+	}
+	
 	/*
 	//Set info about the bag based on the specified name
 	public void setBagFromList(char name) {
@@ -148,7 +156,7 @@ public class DataReader {
 			
 			//If there was no fitLimits specified, make the max the total number of items + 1
 			if(fitLimitMin == 0 && fitLimitMax == 0) {
-				fitLimitMin = 0;
+				fitLimitMin = 1;
 				fitLimitMax = items.size();
 			}
 			br.close();
@@ -275,7 +283,10 @@ public class DataReader {
 		inputFile = args[0];
 
 		DataReader dReader = new DataReader();
+		BackTracking bt = new BackTracking();
 		dReader.readData();
 		dReader.printData();
+		bt.backTracking(0);
+		
 	}
 }

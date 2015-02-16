@@ -10,10 +10,15 @@ public class EqualBinary implements IConstraint {
 		item2 = i2;
 	}
 	
-	@Override
+	//Checks the bag that each item belongs to. 
+	//If the items belong to the same bag, or if either one of the items have yet to be assigned, return true
+	//If the items belong to different bags, return false
 	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return true;
+		if(item1.getBag().equals(null) || item2.getBag().equals(null))
+			return true;
+		if(item1.getBag().getName() == item2.getBag().getName())
+			return true;
+		return false;
 	}
 
 }

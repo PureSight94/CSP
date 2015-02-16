@@ -14,10 +14,19 @@ public class MutualExclusiveBinary implements IConstraint {
 		bag2 = b2;
 	}
 	
-	@Override
+	//Example A B x y
+	//If A has the value x, B cannot have value y
+	//If B has value x, A cannot have value y
+	//If one of these values are null, then the constraint is not violated, return true
 	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
+		if(item1.getBag().equals(null) || item2.getBag().equals(null)) {
+			return true;
+		}
+		if(item1.getBag().getName() == bag1.getName() && item2.getBag().getName() == bag2.getName()) 
+			return false;
+		if(item1.getBag().getName() == bag2.getName() && item2.getBag().getName() == bag1.getName())
+			return false;
+		return true;
 	}
 
 	

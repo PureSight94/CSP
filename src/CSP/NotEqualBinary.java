@@ -10,10 +10,15 @@ public class NotEqualBinary implements IConstraint {
 		item2 = i2;
 	}
 	
-	@Override
+	//Checks the location of each item.
+	//Returns true if the items are in different bags or if one has yet to be assigned
+	//Returns false if they are in the same bag
 	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
+		if(item1.getBag().equals(null) || item2.getBag().equals(null))
+			return true;
+		if(item1.getBag().getName() == (item2.getBag().getName()))
+			return false;
+		return true;
 	}
 
 }

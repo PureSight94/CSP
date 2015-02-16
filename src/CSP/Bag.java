@@ -45,4 +45,14 @@ public class Bag {
 	public int getCurrentWeight () {
 		return currentWeight;
 	}
+	
+	public ArrayList<Item> getItems() {
+		return this.items;
+	}
+	
+	public boolean equals(Bag b) {
+		if(this.name == (b.name))
+			return true;
+		return false;
+	}
 }

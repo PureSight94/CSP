@@ -130,16 +130,53 @@ public class DataReader {
 					Item i2 = getItemByName(splitLine[1].charAt(0));
 					Bag b1 = getBagByName(splitLine[2].charAt(0));
 					Bag b2 = getBagByName(splitLine[3].charAt(0));
+					System.out.println(i1.getName());
+					System.out.println(i2.getName());
 					MEB.add(new MutualExclusiveBinary(i1, i2, b1, b2));
 				}
 			}
-			
 			if(numLines == 8) {
 				System.out.println("There is no problem specified!");
 				System.exit(-1);
 			}
 			
 			br.close();
+			
+			
+			
+			//Test for isValid constraint methods
+			/*
+			ArrayList<InclusiveUnary> IU = new ArrayList<InclusiveUnary>();
+			ArrayList<EqualBinary> EB = new ArrayList<EqualBinary>();
+			ArrayList<ExclusiveUnary> EU = new ArrayList<ExclusiveUnary>();
+			ArrayList<MutualExclusiveBinary> MEB = new ArrayList<MutualExclusiveBinary>();
+			ArrayList<NotEqualBinary> NEB = new ArrayList<NotEqualBinary>();
+			*/
+			for(InclusiveUnary u: IU) {
+				System.out.println(u.isValid());
+			}
+			for(EqualBinary E: EB) {
+				System.out.println(E.isValid());
+			}
+			for(ExclusiveUnary u: EU) {
+				System.out.println(u.isValid());
+			}
+			for(MutualExclusiveBinary b: MEB) {
+				System.out.println(b.isValid());
+			}
+			for(NotEqualBinary b: NEB) {
+				System.out.println(b.isValid());
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 		}
 		catch(IOException e) {
 			e.printStackTrace();

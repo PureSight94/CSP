@@ -19,7 +19,7 @@ public class MutualExclusiveBinary implements IConstraint {
 	//If B has value x, A cannot have value y
 	//If one of these values are null, then the constraint is not violated, return true
 	public boolean isValid() {
-		if(item1.getBag().equals(null) || item2.getBag().equals(null)) {
+		if(item1.getBag() == null || item2.getBag() == null) {
 			return true;
 		}
 		if(item1.getBag().getName() == bag1.getName() && item2.getBag().getName() == bag2.getName()) 

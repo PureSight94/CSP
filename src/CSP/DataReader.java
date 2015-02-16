@@ -7,11 +7,22 @@ import java.util.ArrayList;
 
 public class DataReader {
 	
+	//Variables for parsing and processing file
 	private static String inputFile;
 	private ArrayList<Item> items;
 	private ArrayList<Bag> bags;
 	private static int fitLimitMin;
 	private static int fitLimitMax;
+	
+	//ArrayLists to hold constraints
+	//Public because we will need these when going through algorithm
+	public static ArrayList<InclusiveUnary> IU = new ArrayList<InclusiveUnary>();
+	public static ArrayList<EqualBinary> EB = new ArrayList<EqualBinary>();
+	public static ArrayList<ExclusiveUnary> EU = new ArrayList<ExclusiveUnary>();
+	public static ArrayList<MutualExclusiveBinary> MEB = new ArrayList<MutualExclusiveBinary>();
+	public static ArrayList<NotEqualBinary> NEB = new ArrayList<NotEqualBinary>();
+	
+	//Assignment of variable value pairs
 	
 	/*
 	 * Constructor.
@@ -59,11 +70,6 @@ public class DataReader {
 	public void readData() {
 		BufferedReader br;
 		int numLines = 0;
-		ArrayList<InclusiveUnary> IU = new ArrayList<InclusiveUnary>();
-		ArrayList<EqualBinary> EB = new ArrayList<EqualBinary>();
-		ArrayList<ExclusiveUnary> EU = new ArrayList<ExclusiveUnary>();
-		ArrayList<MutualExclusiveBinary> MEB = new ArrayList<MutualExclusiveBinary>();
-		ArrayList<NotEqualBinary> NEB = new ArrayList<NotEqualBinary>();
 		
 		try{
 			br = new BufferedReader(new FileReader(inputFile));
@@ -143,7 +149,7 @@ public class DataReader {
 			br.close();
 			
 			
-			
+			//Debug start
 			//Test for isValid constraint methods
 			/*
 			ArrayList<InclusiveUnary> IU = new ArrayList<InclusiveUnary>();
@@ -152,29 +158,8 @@ public class DataReader {
 			ArrayList<MutualExclusiveBinary> MEB = new ArrayList<MutualExclusiveBinary>();
 			ArrayList<NotEqualBinary> NEB = new ArrayList<NotEqualBinary>();
 			*/
-			for(InclusiveUnary u: IU) {
-				System.out.println(u.isValid());
-			}
-			for(EqualBinary E: EB) {
-				System.out.println(E.isValid());
-			}
-			for(ExclusiveUnary u: EU) {
-				System.out.println(u.isValid());
-			}
-			for(MutualExclusiveBinary b: MEB) {
-				System.out.println(b.isValid());
-			}
-			for(NotEqualBinary b: NEB) {
-				System.out.println(b.isValid());
-			}
-			
-			
-			
-			
-			
-			
-			
-			
+
+			//End of debug
 			
 			
 		}
@@ -210,6 +195,69 @@ public class DataReader {
 		return fitLimitMax;
 	}
 	
+	/*
+	private ArrayList<Item> items;
+	private ArrayList<Bag> bags;
+	private static int fitLimitMin;
+	private static int fitLimitMax;
+	*/
+	
+	//Checks that no constraints are violated         
+	//Checks that each bag is within its fitLimits
+	//Checks that each bag is at least 90% full
+	//Checks that each bag isn't over 100% full
+	public boolean isComplete() {
+		if(!constraintSatisfied())
+			return false;
+		if(!inFittingLimits())
+			return false;
+		if(!withinCapacity())
+			return false;
+		return true;
+	}
+	
+	public boolean withinCapacity() {
+		for(Bag b: bags) {
+			double ninetyPercent = b.getWeightCapacity() * 0.90;
+			double hundredPercent = b.getWeightCapacity();
+			if(b.getCurrentWeight() < ninetyPercent || b.getCurrentWeight() > hundredPercent)
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean inFittingLimits() {
+		for(Bag b: bags) {
+			if( b.getNumItems() < fitLimitMin || b.getNumItems() > fitLimitMax)
+				return false;
+		}
+		return true;
+	}
+	
+	//Check each constraint
+	public boolean constraintSatisfied() {
+		for(InclusiveUnary u: IU) {
+			if(!u.isValid())
+				return false;
+		}
+		for(EqualBinary E: EB) {
+			if(!E.isValid())
+				return false;
+		}
+		for(ExclusiveUnary u: EU) {
+			if(!u.isValid())
+				return false;
+		}
+		for(MutualExclusiveBinary b: MEB) {
+			if(!b.isValid())
+				return false;
+		}
+		for(NotEqualBinary b: NEB) {
+			if(!b.isValid())
+				return false;
+		}
+		return true;
+	}
 	/*
 	 * Entry point of program.
 	 */

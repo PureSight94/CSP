@@ -1,4 +1,7 @@
 package CSP;
+
+import java.util.ArrayList;
+
 /**
  * @author Dan True, Nick
  *
@@ -6,12 +9,12 @@ package CSP;
 public class Item {
 	private char name;
 	private int weight;
-	private Bag location;
+	private ArrayList<Bag> possibleLocations;
 	
 	public Item (char name, int weight) {
 		this.name = name;
 		this.weight = weight;
-		location = null;
+		possibleLocations = new ArrayList<Bag>();
 	}
 	
 	public char getName () {
@@ -22,12 +25,12 @@ public class Item {
 		return weight;
 	}
 	
-	public Bag getBag() {
-		return this.location;
+	public ArrayList<Bag> getBag() {
+		return this.possibleLocations;
 	}
 	
-	public void setBag(Bag newBag) {
-		this.location = newBag;
+	public void addBag(Bag newBag) {
+		this.possibleLocations.add(newBag);
 	}
 	
 }

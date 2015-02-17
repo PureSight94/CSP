@@ -21,12 +21,14 @@ public class DataReader {
 		bags = new ArrayList<Bag>();
 	}
 
+	ArrayList<IConstraint> constraintList = new ArrayList<IConstraint>();
 	/*
 	 * Process and parse input file.
 	 */
 	public void readData() {
 		BufferedReader br;
 		int numLines = 0;
+		
 		try{
 			br = new BufferedReader(new FileReader(inputFile));
 			String thisLine = null;
@@ -54,9 +56,18 @@ public class DataReader {
 				}
 				else if(typeNum == 4) {
 					// Unary inclusive
+					Item i = getItemByName(splitLine[0].charAt(0));
+					ArrayList<Bag> bags = new ArrayList<Bag>();
+					bags = getBagsFromLine(splitLine);
+					InclusiveUnary IU = new InclusiveUnary(i, bags);
+					constraintList.add(IU);
 				}
 				else if(typeNum == 5) {
 					// Unary exclusive
+					Item i = getItemByName(splitLine[0].charAt(0));
+					ArrayList<Bag> bags = getBagsFromLine(splitLine);
+					ExclusiveUnary EU = new ExclusiveUnary(i, bags);
+					constraintList.add(EU);
 				}
 				else if(typeNum == 6) {
 					// Binary Equals
@@ -79,6 +90,32 @@ public class DataReader {
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public ArrayList<Bag> getBagsFromLine(String splitLine[]) {
+		ArrayList<Bag> bags = new ArrayList<Bag>();
+		for(int j = 1; j < splitLine.length; j++) {
+			Bag b = getBagByName(splitLine[j].charAt(0));
+			bags.add(b);
+		}
+		return bags;
+	}
+	
+	//Gets the given bag from the bag list by same name
+	public Bag getBagByName(char bagCheck) {
+		for(Bag b: bags) {
+			if(b.getName() == bagCheck)
+				return b;
+		}
+		return null;
+	}
+	
+	public Item getItemByName(char itemCheck) {
+		for(Item i: items) {
+			if(i.getName() == itemCheck)
+				return i;
+		}
+		return null;
 	}
 	
 	/*

@@ -71,12 +71,24 @@ public class DataReader {
 				}
 				else if(typeNum == 6) {
 					// Binary Equals
+					Item i1 = getItemByName(splitLine[0].charAt(0));
+					Item i2 = getItemByName(splitLine[1].charAt(0));
+					EqualBinary EB = new EqualBinary(i1, i2);
+					constraintList.add(EB);
 				}
 				else if(typeNum == 7) {
 					// Binary Not Equals
+					Item i1 = getItemByName(splitLine[0].charAt(0));
+					Item i2 = getItemByName(splitLine[1].charAt(0));
+					NotEqualBinary NEB = new NotEqualBinary(i1, i2);
+					constraintList.add(NEB);
 				}
 				else if(typeNum == 8) {
 					// Mutual Exclusive
+					Item i1 = getItemByName(splitLine[0].charAt(0));
+					Item i2 = getItemByName(splitLine[0].charAt(0));
+					MutualExclusiveBinary MEB = new MutualExclusiveBinary(i1, i2);
+					constraintList.add(MEB);
 				}
 			}
 			

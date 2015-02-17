@@ -20,9 +20,14 @@ public class InclusiveUnary implements IConstraint {
 	}
 	
 	@Override
-	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isValid(ArrayList<Assignment> assignments) {
+		for(Assignment a : assignments) {
+			if(a.getItem().equals(item)) {
+				return bags.contains(a.getBag());
+			}
+		}
+		
+		return true;
 	}
 
 }

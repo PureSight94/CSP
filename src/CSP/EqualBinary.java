@@ -1,5 +1,7 @@
 package CSP;
 
+import java.util.ArrayList;
+
 public class EqualBinary implements IConstraint {
 
 	private Item item1;
@@ -11,7 +13,7 @@ public class EqualBinary implements IConstraint {
 	}
 	
 	@Override
-	public boolean isValid() {
+	public boolean isValid(ArrayList<Assignment> assignments) {
 		// TODO Auto-generated method stub
 		return true;
 	}

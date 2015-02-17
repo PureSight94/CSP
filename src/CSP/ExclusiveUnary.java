@@ -20,7 +20,7 @@ public class ExclusiveUnary implements IConstraint {
 	}
 	
 	@Override
-	public boolean isValid() {
+	public boolean isValid(ArrayList<Assignment> assignments) {
 		// TODO Auto-generated method stub
 		return false;
 	}

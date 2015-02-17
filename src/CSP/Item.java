@@ -33,4 +33,8 @@ public class Item {
 		this.possibleLocations.add(newBag);
 	}
 	
+	public boolean equals(Item i) {
+		return (this.name == i.name && this.weight == i.weight);
+	}
+	
 }

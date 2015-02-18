@@ -246,11 +246,18 @@ public class DataReader {
 		return possibleBags;
 	}
 
-	/*
-	public Item minimumRemainingValues() {
-		
+	
+	public Item minimumRemainingValues(ArrayList<Assignment> assignments) {
+		ArrayList<Item> totalItems = cloneItems();
+		for(Assignment a: assignments) {
+			totalItems.remove(a.getItem());
+		}
+		Collections.sort(totalItems);
+		if(totalItems.isEmpty())
+			return null;
+		return totalItems.get(0);
 	}
-	*/
+	
 	
 	public ArrayList<Assignment> backTrackRunner() {		
 		ArrayList<Assignment> results = backTrack(new ArrayList<Assignment>());

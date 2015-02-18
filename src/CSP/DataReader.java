@@ -194,6 +194,14 @@ public class DataReader {
 		return true;
 	}
 
+	public ArrayList<Bag> cloneBags() {
+		ArrayList<Bag> cloneBags = new ArrayList<Bag>();
+		for(Bag b: bags) {
+			cloneBags.add(b);
+		}
+		return cloneBags;
+	}
+	
 	public ArrayList<Item> cloneItems() {
 		ArrayList<Item> cloneList = new ArrayList<Item>();
 		for(Item i: items) {
@@ -214,12 +222,25 @@ public class DataReader {
 		boolean isComp = (checkValidity(assignments) && overMinLimit() && selectUnassignedItem(assignments) == null);
 		return isComp;
 	}
+	
+
+	
+	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
+	//The bag that leaves the most open space left
+	public ArrayList<Bag> leastConstrainingValue(Item i) {
+		ArrayList<Bag> possibleBags = cloneBags();
+		for(Bag b: bags) {
+			
+		}
+		return possibleBags;
+	}
 
 	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {
 		
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
+		//Call least constraining Value for current i
 		for(Bag b: bags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);

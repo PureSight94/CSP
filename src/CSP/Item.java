@@ -25,11 +25,11 @@ public class Item {
 		return weight;
 	}
 	
-	public ArrayList<Bag> getBag() {
+	public ArrayList<Bag> getPossibleLocations() {
 		return this.possibleLocations;
 	}
 	
-	public void addBag(Bag newBag) {
+	public void addPossibleLocation(Bag newBag) {
 		this.possibleLocations.add(newBag);
 	}
 	

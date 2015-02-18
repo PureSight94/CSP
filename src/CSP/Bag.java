@@ -18,6 +18,11 @@ public class Bag implements Comparable<Bag> {
 		itemCount = 0;
 	}
 	
+	public void clear() {
+		this.currentWeight = 0;
+		this.itemCount = 0;
+	}
+	
 	public int compareTo(Bag b2) {
 		int b1Available = this.getWeightCapacity() - this.getCurrentWeight();
 		int b2Available = b2.getWeightCapacity() - b2.getCurrentWeight();

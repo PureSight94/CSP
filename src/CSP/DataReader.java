@@ -8,8 +8,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DataReader {
 
+public class DataReader {
+	public static final int BT = 1;
+	public static final int BTWithHeuristics = 2;
+	public static final int FCWithHeuristics = 3;
+	
 	private static String inputFile;
 	private ArrayList<Item> allItems;
 	private ArrayList<Bag> allBags;
@@ -238,6 +242,7 @@ public class DataReader {
 		return isComp;
 	}
 
+	
 	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
 	//The bag that leaves the most open space left
 	public ArrayList<Bag> leastConstrainingValue() {
@@ -258,12 +263,33 @@ public class DataReader {
 		return totalItems.get(0);
 	}
 	
+	public void reset() {
+		for(Bag b: allBags) {
+			b.clear();
+		}
+	}
 	
-	public ArrayList<Assignment> backTrackRunner() {		
-		ArrayList<Assignment> results = backTrack(new ArrayList<Assignment>());
+	public ArrayList<Assignment> backTrackRunner(int mode) {
+		ArrayList<Assignment> results;
 
+		switch(mode) {
+		case BT: 
+			results = backTrack(new ArrayList<Assignment>());
+			break;
+		case BTWithHeuristics: 
+			results = backTrackHeuristics(new ArrayList<Assignment>());
+			break;
+		case FCWithHeuristics: 
+			results = backTrackFC(new ArrayList<Assignment>());
+			break;
+		default: 
+			results = backTrack(new ArrayList<Assignment>());
+			break;
+		}
+		
 		if(results == null)
 			return new ArrayList<Assignment>();
+		
 		return results;
 	}
 	
@@ -298,6 +324,14 @@ public class DataReader {
 		return null;
 	}
 
+	public ArrayList<Assignment> backTrackHeuristics(ArrayList<Assignment> assignments) {
+		return assignments;
+	}
+	
+	public ArrayList<Assignment> backTrackFC(ArrayList<Assignment> assignments) {
+		return assignments;
+	}
+	
 	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
 		ArrayList<Item> totalItems = cloneItems();
 		for(Assignment a: assignments) {

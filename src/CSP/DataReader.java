@@ -404,7 +404,7 @@ public class DataReader {
 			return "There is no such assingment.";
 
 		for(Bag b : allBags) {
-			output += "\n\n" + b.getName() + " ";
+			output += "\n" + b.getName() + " ";
 			for(Assignment a : assignments) {
 				if(a.getBag().getName() == b.getName()) {
 					output += a.getItem().getName() + " ";
@@ -412,7 +412,9 @@ public class DataReader {
 			}
 			
 			output += "\nNumber of items: " + b.getItemCount() + "\n"
-					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity() +  "\nWasted capacity: " + (b.getWeightCapacity() - b.getCurrentWeight());
+					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity() 
+					+ "\nWasted capacity: " + (b.getWeightCapacity() - b.getCurrentWeight())
+					+ "\n";
 		}
 		
 		reset();
@@ -433,39 +435,48 @@ public class DataReader {
 
 		DataReader dReader = new DataReader();
 		dReader.readData();
-		
+		System.out.println();
+		System.out.println("*****************************************");
+		System.out.println("*          Assignment Solution          *");
+		System.out.println("*****************************************");
 		System.out.println(dReader.printAssignments(dReader.backTrackRunner(FCWithHeuristics)));
+		System.out.println("\n\n*****************************************");
+		System.out.println(    "*   Running times (average of 5 runs)   *");
+		System.out.println(    "*****************************************\n");
 		
 		long totalTime = 0;
 		long start;
 		long end;
 		long averageTime = 0;
+		String table = "";
 		
 		for(int i = 0; i < 5; i++) {
-			start = System.currentTimeMillis();
+			start = System.nanoTime();
 			dReader.backTrackRunner(BT);
-			end = System.currentTimeMillis();
+			end = System.nanoTime();
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		
-		
+		table += "BT: " + averageTime + "ms\n";
 		
 		for(int i = 0; i < 5; i++) {
-			start = System.currentTimeMillis();
+			start = System.nanoTime();
 			dReader.backTrackRunner(BTWithHeuristics);
-			end = System.currentTimeMillis();
+			end = System.nanoTime();
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
+		table += "BT with heuristics: " + averageTime + "ms\n";
 		
 		for(int i = 0; i < 5; i++) {
-			start = System.currentTimeMillis();
+			start = System.nanoTime();
 			dReader.backTrackRunner(FCWithHeuristics);
-			end = System.currentTimeMillis();
+			end = System.nanoTime();
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
+		table += "FC with heuristics: " + averageTime + "ms\n";
 		
+		System.out.println(table);
 	}
 }

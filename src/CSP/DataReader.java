@@ -159,6 +159,59 @@ public class DataReader {
 		return fitLimitMax;
 	}
 	
+	
+	//MUST ADD A CHECK FOR OVER 100 PERCENT AND OVER MAX
+	public boolean checkValidity(ArrayList<Assignment> assignments) {
+		for(IConstraint c: constraintList) {
+			if(!c.isValid(assignments))
+				return false;
+		}
+		return true;
+	}
+	
+	
+	
+	public ArrayList<Item> cloneItems() {
+		ArrayList<Item> cloneList = new ArrayList<Item>();
+		for(Item i: items) {
+			cloneList.add(i);
+		}
+		return cloneList;
+	}
+	
+	public ArrayList<Assignment> backTrackRunner() {
+		return backTrack(new ArrayList<Assignment>());
+	}
+	
+	public boolean isComplete(ArrayList<Assignment> assignments) {
+		return (checkValidity(assignments) && selectUnassignedItem(assignments) == null);
+	}
+	
+	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {
+		if(isComplete(assignments))
+			return assignments;
+		Item i = selectUnassignedItem(assignments);
+		for(Bag b: bags) {
+			Assignment a = new Assignment(b, i);
+			assignments.add(a);
+			if(checkValidity(assignments))
+				backTrack(assignments);
+			else 
+				assignments.remove(a);
+		}
+		return null;
+	}
+	
+	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
+		ArrayList<Item> totalItems = cloneItems();
+		for(Assignment a: assignments) {
+			totalItems.remove(a.getItem());
+		}
+		if(totalItems.size() == 0)
+			return null;
+		else
+			return totalItems.get(0);
+	}
 	/*
 	 * Entry point of program.
 	 */
@@ -173,5 +226,6 @@ public class DataReader {
 		DataReader dReader = new DataReader();
 		dReader.readData();
 		dReader.printData();
+		dReader.backTrackRunner();
 	}
 }

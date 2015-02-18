@@ -1,9 +1,10 @@
 package CSP;
 
+
 public class Assignment {
 	private Bag bag;
 	private Item item;
-	
+		
 	public Assignment (Bag b, Item i) {
 		bag = b;
 		item = i;
@@ -16,4 +17,7 @@ public class Assignment {
 	public Item getItem () {
 		return item;
 	}
+	
+	
+	
 }

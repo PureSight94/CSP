@@ -166,7 +166,7 @@ public class DataReader {
 	}
 
 	public boolean checkValidity(ArrayList<Assignment> assignments) {
-		if(!underMaxLimit(assignments))
+		if(!underMaxLimit())
 			return false;
 		for(IConstraint c: constraintList) {
 			if(!c.isValid(assignments))
@@ -177,18 +177,19 @@ public class DataReader {
 		return true;
 	}
 	
-	public boolean overMinLimit(ArrayList<Assignment> assignments) {
-		for(Assignment a: assignments) {
-			if(a.getBag().getItemCount() < fitLimitMin || a.getBag().getCurrentWeight() < 0.9 * a.getBag().getWeightCapacity())
+	public boolean overMinLimit() {
+		for(Bag b: bags) {
+			if(b.getItemCount() < fitLimitMin || b.getCurrentWeight() < 0.9 * b.getWeightCapacity())
 				return false;
 		}
 		return true;
 	}
 
-	public boolean underMaxLimit(ArrayList<Assignment> assignments) {
-		for(Assignment a: assignments) {
-			if(a.getBag().getItemCount() > fitLimitMax || a.getBag().getCurrentWeight() > a.getBag().getWeightCapacity())
+	public boolean underMaxLimit() {
+		for(Bag b: bags) {
+			if(b.getItemCount() > fitLimitMax || b.getCurrentWeight() > b.getWeightCapacity()) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -210,7 +211,8 @@ public class DataReader {
 	}
 
 	public boolean isComplete(ArrayList<Assignment> assignments) {
-		return (checkValidity(assignments) && overMinLimit(assignments) && selectUnassignedItem(assignments) == null);
+		boolean isComp = (checkValidity(assignments) && overMinLimit() && selectUnassignedItem(assignments) == null);
+		return isComp;
 	}
 
 	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {

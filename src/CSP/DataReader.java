@@ -159,9 +159,10 @@ public class DataReader {
 		return fitLimitMax;
 	}
 	
-	
 	//MUST ADD A CHECK FOR OVER 100 PERCENT AND OVER MAX
 	public boolean checkValidity(ArrayList<Assignment> assignments) {
+		if(!underMaxLimit(assignments))
+			return false;
 		for(IConstraint c: constraintList) {
 			if(!c.isValid(assignments))
 				return false;
@@ -169,7 +170,13 @@ public class DataReader {
 		return true;
 	}
 	
-	
+	public boolean underMaxLimit(ArrayList<Assignment> assignments) {
+		for(Assignment a: assignments) {
+			if(a.getBag().getItemCount() > fitLimitMax || a.getBag().getCurrentWeight() > a.getBag().getWeightCapacity())
+				return false;
+		}
+		return true;
+	}
 	
 	public ArrayList<Item> cloneItems() {
 		ArrayList<Item> cloneList = new ArrayList<Item>();
@@ -199,12 +206,17 @@ public class DataReader {
 		for(Bag b: bags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
+			a.getBag().incrementWeight(a.getItem().getWeight());
+			a.getBag().incrementCount();
 			if(checkValidity(assignments)) {
 				backTrack(assignments);
 				break;
 			}
-			else 
+			else {
+				a.getBag().decrementWeight(a.getItem().getWeight());
+				a.getBag().decrementCount();
 				assignments.remove(a);
+			}
 		}
 		if(isComplete(assignments))
 			return assignments;

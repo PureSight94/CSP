@@ -60,8 +60,10 @@ public class DataReader {
 				else if(typeNum == 4) {
 					// Unary inclusive
 					Item i = getItemByName(splitLine[0].charAt(0));
-					ArrayList<Bag> bags = new ArrayList<Bag>();
-					bags = getBagsFromLine(splitLine);
+					ArrayList<Bag> bags = getBagsFromLine(splitLine);
+					for(Bag b : bags) {
+						i.addPossibleLocation(b);
+					}
 					InclusiveUnary IU = new InclusiveUnary(i, bags);
 					constraintList.add(IU);
 				}
@@ -69,6 +71,12 @@ public class DataReader {
 					// Unary exclusive
 					Item i = getItemByName(splitLine[0].charAt(0));
 					ArrayList<Bag> bags = getBagsFromLine(splitLine);
+					for(Bag b : allBags) {
+						i.addPossibleLocation(b);
+					}
+					for(Bag b : bags) {
+						i.removePossibleLocation(b);
+					}
 					ExclusiveUnary EU = new ExclusiveUnary(i, bags);
 					constraintList.add(EU);
 				}

@@ -33,6 +33,10 @@ public class Item {
 		this.possibleLocations.add(newBag);
 	}
 	
+	public void removePossibleLocation(Bag existingBag) {
+		this.possibleLocations.remove(existingBag);
+	}
+	
 	public boolean equals(Item i) {
 		return (this.name == i.name && this.weight == i.weight);
 	}

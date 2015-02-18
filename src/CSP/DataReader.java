@@ -97,7 +97,7 @@ public class DataReader {
 			}
 
 			if(numLines == 8) {
-				System.out.println("There is no problem specified!");
+				System.out.println("No such assignment is possible.");
 				System.exit(-1);
 			}
 			
@@ -261,7 +261,7 @@ public class DataReader {
 		String output = "";
 
 		if(assignments.isEmpty())
-			return "NO ASSIGNMENTS";
+			return "There is no such assingment.";
 
 		for(Bag b : bags) {
 			output += "\n\n" + b.getName() + " ";
@@ -272,7 +272,7 @@ public class DataReader {
 			}
 			
 			output += "\nNumber of items: " + b.getItemCount() + "\n"
-					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity();
+					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity() +  "\nWasted capacity: " + (b.getWeightCapacity() - b.getCurrentWeight());
 		}
 
 		return output;
@@ -283,7 +283,7 @@ public class DataReader {
 	 */
 	public static void main(String[] args) {
 		if(args.length != 1) {
-			System.out.println("Incorrect number of command line arguments");
+			System.out.println("Incorrect number of command line arguments.");
 			System.exit(-1);
 		}
 

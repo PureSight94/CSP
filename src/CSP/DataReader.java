@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -222,16 +223,13 @@ public class DataReader {
 		boolean isComp = (checkValidity(assignments) && overMinLimit() && selectUnassignedItem(assignments) == null);
 		return isComp;
 	}
-	
 
 	
 	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
 	//The bag that leaves the most open space left
-	public ArrayList<Bag> leastConstrainingValue(Item i) {
+	public ArrayList<Bag> leastConstrainingValue() {
 		ArrayList<Bag> possibleBags = cloneBags();
-		for(Bag b: bags) {
-			
-		}
+		Collections.sort(possibleBags);
 		return possibleBags;
 	}
 
@@ -240,7 +238,7 @@ public class DataReader {
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
-		//Call least constraining Value for current i
+		//ArrayList<Bag> orderedBags = leastConstrainingValue();
 		for(Bag b: bags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);

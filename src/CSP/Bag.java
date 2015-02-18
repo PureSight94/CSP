@@ -5,7 +5,7 @@ package CSP;
  * @author Dan True, Nick
  *
  */
-public class Bag {
+public class Bag implements Comparable<Bag> {
 	private char name;
 	private int weightCapacity;
 	private int currentWeight;
@@ -16,6 +16,19 @@ public class Bag {
 		this.weightCapacity = weightCapacity;
 		currentWeight = 0;
 		itemCount = 0;
+	}
+	
+	public int compareTo(Bag b2) {
+		int b1Available = this.getWeightCapacity() - this.getCurrentWeight();
+		int b2Available = b2.getWeightCapacity() - b2.getCurrentWeight();
+		if(b1Available > b2Available) {
+			return -1;
+		}
+		else if(b1Available < b2Available) {
+			return 1;
+		}
+		else 
+			return 0;
 	}
 	
 	public boolean equals (Bag b) {

@@ -11,8 +11,8 @@ import java.util.Set;
 public class DataReader {
 
 	private static String inputFile;
-	private ArrayList<Item> items;
-	private ArrayList<Bag> bags;
+	private ArrayList<Item> allItems;
+	private ArrayList<Bag> allBags;
 	private int fitLimitMin;
 	private int fitLimitMax;
 
@@ -20,8 +20,8 @@ public class DataReader {
 	 * Constructor.
 	 */
 	public DataReader () {
-		items = new ArrayList<Item>();
-		bags = new ArrayList<Bag>();
+		allItems = new ArrayList<Item>();
+		allBags = new ArrayList<Bag>();
 	}
 
 	ArrayList<IConstraint> constraintList = new ArrayList<IConstraint>();
@@ -46,11 +46,11 @@ public class DataReader {
 				}
 				else if(typeNum == 1) {
 					// Items
-					items.add(new Item(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
+					allItems.add(new Item(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
 				}
 				else if(typeNum == 2) {
 					// Bags
-					bags.add(new Bag(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
+					allBags.add(new Bag(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
 				}
 				else if(typeNum == 3) {
 					// Fit limit values
@@ -103,7 +103,7 @@ public class DataReader {
 			}
 			
 			if(fitLimitMax == 0)
-				fitLimitMax = items.size() + 1;
+				fitLimitMax = allItems.size() + 1;
 
 			br.close();
 		}
@@ -123,7 +123,7 @@ public class DataReader {
 
 	//Gets the given bag from the bag list by same name
 	public Bag getBagByName(char bagCheck) {
-		for(Bag b: bags) {
+		for(Bag b: allBags) {
 			if(b.getName() == bagCheck)
 				return b;
 		}
@@ -131,7 +131,7 @@ public class DataReader {
 	}
 
 	public Item getItemByName(char itemCheck) {
-		for(Item i: items) {
+		for(Item i: allItems) {
 			if(i.getName() == itemCheck)
 				return i;
 		}
@@ -144,12 +144,12 @@ public class DataReader {
 	 */
 	public void printData () {
 		System.out.println("Item: ");
-		for(Item i : items) {
+		for(Item i : allItems) {
 			System.out.println("\t" + i.getName() + " " + i.getWeight());
 		}
 
 		System.out.println("Bag: ");
-		for(Bag b : bags) {
+		for(Bag b : allBags) {
 			System.out.println("\t" + b.getName() + " " + b.getWeightCapacity());
 		}
 
@@ -179,7 +179,7 @@ public class DataReader {
 	}
 	
 	public boolean overMinLimit() {
-		for(Bag b: bags) {
+		for(Bag b: allBags) {
 			if(b.getItemCount() < fitLimitMin || b.getCurrentWeight() < 0.9 * b.getWeightCapacity())
 				return false;
 		}
@@ -187,7 +187,7 @@ public class DataReader {
 	}
 
 	public boolean underMaxLimit() {
-		for(Bag b: bags) {
+		for(Bag b: allBags) {
 			if(b.getItemCount() > fitLimitMax || b.getCurrentWeight() > b.getWeightCapacity()) {
 				return false;
 			}
@@ -197,7 +197,7 @@ public class DataReader {
 
 	public ArrayList<Bag> cloneBags() {
 		ArrayList<Bag> cloneBags = new ArrayList<Bag>();
-		for(Bag b: bags) {
+		for(Bag b: allBags) {
 			cloneBags.add(b);
 		}
 		return cloneBags;
@@ -205,18 +205,10 @@ public class DataReader {
 	
 	public ArrayList<Item> cloneItems() {
 		ArrayList<Item> cloneList = new ArrayList<Item>();
-		for(Item i: items) {
+		for(Item i: allItems) {
 			cloneList.add(i);
 		}
 		return cloneList;
-	}
-
-	public ArrayList<Assignment> backTrackRunner() {		
-		ArrayList<Assignment> results = backTrack(new ArrayList<Assignment>());
-
-		if(results == null)
-			return new ArrayList<Assignment>();
-		return results;
 	}
 
 	public boolean isComplete(ArrayList<Assignment> assignments) {
@@ -224,7 +216,6 @@ public class DataReader {
 		return isComp;
 	}
 
-	
 	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
 	//The bag that leaves the most open space left
 	public ArrayList<Bag> leastConstrainingValue() {
@@ -233,13 +224,26 @@ public class DataReader {
 		return possibleBags;
 	}
 
-	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {
+	/*
+	public Item minimumRemainingValues() {
 		
+	}
+	*/
+	
+	public ArrayList<Assignment> backTrackRunner() {		
+		ArrayList<Assignment> results = backTrack(new ArrayList<Assignment>());
+
+		if(results == null)
+			return new ArrayList<Assignment>();
+		return results;
+	}
+	
+	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {	
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
 		//ArrayList<Bag> orderedBags = leastConstrainingValue();
-		for(Bag b: bags) {
+		for(Bag b: allBags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
 			a.getBag().incrementWeight(a.getItem().getWeight());
@@ -282,7 +286,7 @@ public class DataReader {
 		if(assignments.isEmpty())
 			return "There is no such assingment.";
 
-		for(Bag b : bags) {
+		for(Bag b : allBags) {
 			output += "\n\n" + b.getName() + " ";
 			for(Assignment a : assignments) {
 				if(a.getBag().getName() == b.getName()) {

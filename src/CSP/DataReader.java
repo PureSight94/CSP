@@ -119,7 +119,6 @@ public class DataReader {
 			if(fitLimitMax == 0)
 				fitLimitMax = allItems.size() + 1;
 			
-			this.printPossibleLocations();
 			br.close();
 		}
 		catch(IOException e) {
@@ -297,7 +296,6 @@ public class DataReader {
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
-		//ArrayList<Bag> orderedBags = leastConstrainingValue();
 		for(Bag b: allBags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
@@ -360,6 +358,8 @@ public class DataReader {
 			output += "\nNumber of items: " + b.getItemCount() + "\n"
 					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity() +  "\nWasted capacity: " + (b.getWeightCapacity() - b.getCurrentWeight());
 		}
+		
+		reset();
 
 		return output;
 	}
@@ -377,7 +377,7 @@ public class DataReader {
 
 		DataReader dReader = new DataReader();
 		dReader.readData();
-		dReader.printData();
-		System.out.println(dReader.printAssignments(dReader.backTrackRunner()));
+		System.out.println("---1.\n" + dReader.printAssignments(dReader.backTrackRunner(BT)));
+		System.out.println("---2.\n" + dReader.printAssignments(dReader.backTrackRunner(BT)));
 	}
 }

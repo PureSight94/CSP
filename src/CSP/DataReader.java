@@ -86,8 +86,10 @@ public class DataReader {
 				else if(typeNum == 8) {
 					// Mutual Exclusive
 					Item i1 = getItemByName(splitLine[0].charAt(0));
-					Item i2 = getItemByName(splitLine[0].charAt(0));
-					MutualExclusiveBinary MEB = new MutualExclusiveBinary(i1, i2);
+					Item i2 = getItemByName(splitLine[1].charAt(0));
+					Bag b1 = getBagByName(splitLine[2].charAt(0));
+					Bag b2 = getBagByName(splitLine[3].charAt(0));
+					MutualExclusiveBinary MEB = new MutualExclusiveBinary(i1, i2, b1, b2);
 					constraintList.add(MEB);
 				}
 			}

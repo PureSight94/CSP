@@ -184,22 +184,32 @@ public class DataReader {
 	}
 	
 	public boolean isComplete(ArrayList<Assignment> assignments) {
+		if(selectUnassignedItem(assignments) != null)
+			System.out.println("next item: " + selectUnassignedItem(assignments).getName());
+		else
+			System.out.println("next item: " + selectUnassignedItem(assignments));
+		System.out.println("checkValidity: " + checkValidity(assignments));
 		return (checkValidity(assignments) && selectUnassignedItem(assignments) == null);
 	}
 	
 	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {
-		if(isComplete(assignments))
-			return assignments;
 		Item i = selectUnassignedItem(assignments);
+		if(i == null)
+			return new ArrayList<Assignment>();
 		for(Bag b: bags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
-			if(checkValidity(assignments))
+			if(checkValidity(assignments)) {
 				backTrack(assignments);
+				System.out.println("Valid Assignment");
+			}
 			else 
 				assignments.remove(a);
 		}
-		return null;
+		if(isComplete(assignments))
+			return assignments;
+		else
+			return new ArrayList<Assignment>();
 	}
 	
 	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
@@ -212,6 +222,19 @@ public class DataReader {
 		else
 			return totalItems.get(0);
 	}
+	
+	public String printAssignments(ArrayList<Assignment> assignments) {
+		String output = "";
+		
+		if(assignments.isEmpty())
+			return "NO ASSIGNMENTS";
+		for(Assignment a : assignments) {
+			output += a.getItem().getName() + " -> " + a.getBag().getName() + "\n";
+		}
+		
+		return output;
+	}
+	
 	/*
 	 * Entry point of program.
 	 */
@@ -226,6 +249,6 @@ public class DataReader {
 		DataReader dReader = new DataReader();
 		dReader.readData();
 		dReader.printData();
-		dReader.backTrackRunner();
+		System.out.println(dReader.printAssignments(dReader.backTrackRunner()));
 	}
 }

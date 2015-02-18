@@ -41,7 +41,6 @@ public class MutualExclusiveBinary implements IConstraint {
 	public static void main(String[] args) {
 		Item i1  = new Item('a', 10);
 		Item i2 = new Item('b', 15);
-		Item i3 = new Item('c', 10);
 		Item i4 = new Item('d', 15);
 		
 		Bag b1 = new Bag('A', 50);
@@ -54,8 +53,6 @@ public class MutualExclusiveBinary implements IConstraint {
 		
 		Assignment a1 = new Assignment(b1, i1);
 		Assignment a2 = new Assignment(b2, i2);
-		Assignment a3 = new Assignment(b1, i2);
-		Assignment a4 = new Assignment(b2, i1);
 		Assignment a5 = new Assignment(b1, i4);
 		
 		

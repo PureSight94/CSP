@@ -6,8 +6,8 @@ public class Assignment {
 	private Item item;
 		
 	public Assignment (Bag b, Item i) {
-		bag = b;
-		item = i;
+		this.bag = b;
+		this.item = i;
 	}
 	
 	public Bag getBag () {

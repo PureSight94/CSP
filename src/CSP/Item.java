@@ -37,6 +37,10 @@ public class Item {
 		this.possibleLocations.remove(existingBag);
 	}
 	
+	public void clearPossibleLocations() {
+		this.possibleLocations = new ArrayList<Bag>();
+	}
+	
 	public boolean equals(Item i) {
 		return (this.name == i.name && this.weight == i.weight);
 	}

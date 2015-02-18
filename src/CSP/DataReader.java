@@ -50,7 +50,11 @@ public class DataReader {
 				}
 				else if(typeNum == 2) {
 					// Bags
-					allBags.add(new Bag(splitLine[0].charAt(0), Integer.parseInt(splitLine[1])));
+					Bag b = new Bag(splitLine[0].charAt(0), Integer.parseInt(splitLine[1]));
+					allBags.add(b);
+					for(Item i : allItems) {
+						i.addPossibleLocation(b);
+					}
 				}
 				else if(typeNum == 3) {
 					// Fit limit values
@@ -61,6 +65,7 @@ public class DataReader {
 					// Unary inclusive
 					Item i = getItemByName(splitLine[0].charAt(0));
 					ArrayList<Bag> bags = getBagsFromLine(splitLine);
+					i.clearPossibleLocations();
 					for(Bag b : bags) {
 						i.addPossibleLocation(b);
 					}
@@ -71,9 +76,6 @@ public class DataReader {
 					// Unary exclusive
 					Item i = getItemByName(splitLine[0].charAt(0));
 					ArrayList<Bag> bags = getBagsFromLine(splitLine);
-					for(Bag b : allBags) {
-						i.addPossibleLocation(b);
-					}
 					for(Bag b : bags) {
 						i.removePossibleLocation(b);
 					}
@@ -112,12 +114,24 @@ public class DataReader {
 			
 			if(fitLimitMax == 0)
 				fitLimitMax = allItems.size() + 1;
-
+			
+			this.printPossibleLocations();
 			br.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void printPossibleLocations() {
+		System.out.println("----------------------");
+		for(Item i : allItems) {
+			System.out.println(i.getName());
+			for(Bag b : i.getPossibleLocations()) {
+				System.out.println("     " + b.getName());
+			}
+		}
+		System.out.println("----------------------");
 	}
 
 	public ArrayList<Bag> getBagsFromLine(String splitLine[]) {

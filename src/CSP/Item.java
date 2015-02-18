@@ -9,12 +9,12 @@ import java.util.ArrayList;
 public class Item implements Comparable<Item>{
 	private char name;
 	private int weight;
-	private ArrayList<Bag> possibleLocations;
+	private ArrayList<Bag> possibleBags;
 	
 	public Item (char name, int weight) {
 		this.name = name;
 		this.weight = weight;
-		possibleLocations = new ArrayList<Bag>();
+		possibleBags = new ArrayList<Bag>();
 	}
 	
 	public char getName () {
@@ -25,20 +25,20 @@ public class Item implements Comparable<Item>{
 		return weight;
 	}
 	
-	public ArrayList<Bag> getPossibleLocations() {
-		return this.possibleLocations;
+	public ArrayList<Bag> getPossibleBags() {
+		return this.possibleBags;
 	}
 	
 	public void addPossibleLocation(Bag newBag) {
-		this.possibleLocations.add(newBag);
+		this.possibleBags.add(newBag);
 	}
 	
 	public void removePossibleLocation(Bag existingBag) {
-		this.possibleLocations.remove(existingBag);
+		this.possibleBags.remove(existingBag);
 	}
 	
 	public void clearPossibleLocations() {
-		this.possibleLocations = new ArrayList<Bag>();
+		this.possibleBags = new ArrayList<Bag>();
 	}
 	
 	public boolean equals(Item i) {
@@ -46,8 +46,8 @@ public class Item implements Comparable<Item>{
 	}
 
 	public int compareTo(Item i2) {
-		int i1Size = this.possibleLocations.size();
-		int i2Size = i2.possibleLocations.size();
+		int i1Size = this.possibleBags.size();
+		int i2Size = i2.possibleBags.size();
 		int i1Weight = this.getWeight();
 		int i2Weight = i2.getWeight();
 		

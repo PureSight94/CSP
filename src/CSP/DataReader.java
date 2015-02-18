@@ -130,7 +130,7 @@ public class DataReader {
 		System.out.println("----------------------");
 		for(Item i : allItems) {
 			System.out.println(i.getName());
-			for(Bag b : i.getPossibleLocations()) {
+			for(Bag b : i.getPossibleBags()) {
 				System.out.println("     " + b.getName());
 			}
 		}
@@ -220,9 +220,9 @@ public class DataReader {
 		return true;
 	}
 
-	public ArrayList<Bag> cloneBags() {
+	public ArrayList<Bag> cloneBags(ArrayList<Bag> bagListToClone) {
 		ArrayList<Bag> cloneBags = new ArrayList<Bag>();
-		for(Bag b: allBags) {
+		for(Bag b: bagListToClone) {
 			cloneBags.add(b);
 		}
 		return cloneBags;
@@ -244,10 +244,10 @@ public class DataReader {
 	
 	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
 	//The bag that leaves the most open space left
-	public ArrayList<Bag> leastConstrainingValue() {
-		ArrayList<Bag> possibleBags = cloneBags();
-		Collections.sort(possibleBags);
-		return possibleBags;
+	public ArrayList<Bag> leastConstrainingValue(ArrayList<Bag> bagList) {
+		ArrayList<Bag> orderedBags = cloneBags(bagList);
+		Collections.sort(orderedBags);
+		return orderedBags;
 	}
 
 	
@@ -323,11 +323,67 @@ public class DataReader {
 	}
 
 	public ArrayList<Assignment> backTrackHeuristics(ArrayList<Assignment> assignments) {
-		return assignments;
+		Item i = minimumRemainingValues(assignments);
+		if(i == null)
+			return new ArrayList<Assignment>();
+		ArrayList<Bag> orderedBags = leastConstrainingValue(allBags);
+		for(Bag b: orderedBags) {
+			Assignment a = new Assignment(b, i);
+			assignments.add(a);
+			a.getBag().incrementWeight(a.getItem().getWeight());
+			a.getBag().incrementCount();
+			if(checkValidity(assignments)) {
+				ArrayList<Assignment> results = backTrack(assignments);
+				if(results == null) {
+					a.getBag().decrementWeight(a.getItem().getWeight());
+					a.getBag().decrementCount();
+					assignments.remove(a);
+				}
+			}
+			else {
+				a.getBag().decrementWeight(a.getItem().getWeight());
+				a.getBag().decrementCount();
+				assignments.remove(a);
+			}
+		}
+		
+		if(isComplete(assignments))
+			return assignments;
+		
+		return null;
 	}
 	
 	public ArrayList<Assignment> backTrackFC(ArrayList<Assignment> assignments) {
-		return assignments;
+		Item i = minimumRemainingValues(assignments);
+		if(i == null)
+			return new ArrayList<Assignment>();
+		
+		ArrayList<Bag> possibleBags = i.getPossibleBags();
+		ArrayList<Bag> orderedBags = leastConstrainingValue(possibleBags);
+		for(Bag b: orderedBags) {
+			Assignment a = new Assignment(b, i);
+			assignments.add(a);
+			a.getBag().incrementWeight(a.getItem().getWeight());
+			a.getBag().incrementCount();
+			if(checkValidity(assignments)) {
+				ArrayList<Assignment> results = backTrack(assignments);
+				if(results == null) {
+					a.getBag().decrementWeight(a.getItem().getWeight());
+					a.getBag().decrementCount();
+					assignments.remove(a);
+				}
+			}
+			else {
+				a.getBag().decrementWeight(a.getItem().getWeight());
+				a.getBag().decrementCount();
+				assignments.remove(a);
+			}
+		}
+		
+		if(isComplete(assignments))
+			return assignments;
+		
+		return null;
 	}
 	
 	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
@@ -377,7 +433,39 @@ public class DataReader {
 
 		DataReader dReader = new DataReader();
 		dReader.readData();
-		System.out.println("---1.\n" + dReader.printAssignments(dReader.backTrackRunner(BT)));
-		System.out.println("---2.\n" + dReader.printAssignments(dReader.backTrackRunner(BT)));
+		
+		System.out.println(dReader.printAssignments(dReader.backTrackRunner(FCWithHeuristics)));
+		
+		long totalTime = 0;
+		long start;
+		long end;
+		long averageTime = 0;
+		
+		for(int i = 0; i < 5; i++) {
+			start = System.currentTimeMillis();
+			dReader.backTrackRunner(BT);
+			end = System.currentTimeMillis();
+			totalTime += end - start;
+		}
+		averageTime = totalTime/5;
+		
+		
+		
+		for(int i = 0; i < 5; i++) {
+			start = System.currentTimeMillis();
+			dReader.backTrackRunner(BTWithHeuristics);
+			end = System.currentTimeMillis();
+			totalTime += end - start;
+		}
+		averageTime = totalTime/5;
+		
+		for(int i = 0; i < 5; i++) {
+			start = System.currentTimeMillis();
+			dReader.backTrackRunner(FCWithHeuristics);
+			end = System.currentTimeMillis();
+			totalTime += end - start;
+		}
+		averageTime = totalTime/5;
+		
 	}
 }

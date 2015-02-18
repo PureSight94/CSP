@@ -29,52 +29,5 @@ public class EqualBinary implements IConstraint {
 		}
 
 		return true;
-	}
-
-	public static void main(String[] args) {
-		Item i1  = new Item('a', 10);
-		Item i2 = new Item('b', 15);
-		Item i4 = new Item('d', 15);
-		
-		Bag b1 = new Bag('A', 50);
-		Bag b2 = new Bag('B', 20);
-		
-		ArrayList<Bag> bags = new ArrayList<Bag>();
-		bags.add(b1);
-		
-		EqualBinary EB = new EqualBinary(i1, i2);
-		
-		Assignment a1 = new Assignment(b1, i1);
-		Assignment a2 = new Assignment(b2, i2);
-		Assignment a5 = new Assignment(b1, i4);
-		
-		ArrayList<Assignment> ass = new ArrayList<Assignment>();
-		ass.add(a1);
-		ass.add(a2);
-		
-		ArrayList<Assignment> ass2 = new ArrayList<Assignment>();
-		ass2.add(a2);
-		
-		ArrayList<Assignment> ass3 = new ArrayList<Assignment>();
-		ass3.add(a2);
-		ass3.add(a1);
-		
-		ArrayList<Assignment> ass4 = new ArrayList<Assignment>();
-		ass.add(a5);
-		ass.add(a1);
-		
-		//Should be false
-		System.out.println(EB.isValid(ass));
-		
-		//Should be true
-		System.out.println(EB.isValid(ass2));
-		
-		//Should be false
-		System.out.println(EB.isValid(ass3));
-		
-		//Should be true
-		System.out.println(EB.isValid(ass4));
-	}
-	
-	
+	}	
 }

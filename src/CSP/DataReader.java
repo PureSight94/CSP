@@ -4,15 +4,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataReader {
-	
+
 	private static String inputFile;
 	private ArrayList<Item> items;
 	private ArrayList<Bag> bags;
-	private static int fitLimitMin;
-	private static int fitLimitMax;
-	
+	private int fitLimitMin;
+	private int fitLimitMax;
+
 	/*
 	 * Constructor.
 	 */
@@ -28,7 +30,7 @@ public class DataReader {
 	public void readData() {
 		BufferedReader br;
 		int numLines = 0;
-		
+
 		try{
 			br = new BufferedReader(new FileReader(inputFile));
 			String thisLine = null;
@@ -93,19 +95,22 @@ public class DataReader {
 					constraintList.add(MEB);
 				}
 			}
-			
+
 			if(numLines == 8) {
 				System.out.println("There is no problem specified!");
 				System.exit(-1);
 			}
 			
+			if(fitLimitMax == 0)
+				fitLimitMax = items.size() + 1;
+
 			br.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ArrayList<Bag> getBagsFromLine(String splitLine[]) {
 		ArrayList<Bag> bags = new ArrayList<Bag>();
 		for(int j = 1; j < splitLine.length; j++) {
@@ -114,7 +119,7 @@ public class DataReader {
 		}
 		return bags;
 	}
-	
+
 	//Gets the given bag from the bag list by same name
 	public Bag getBagByName(char bagCheck) {
 		for(Bag b: bags) {
@@ -123,7 +128,7 @@ public class DataReader {
 		}
 		return null;
 	}
-	
+
 	public Item getItemByName(char itemCheck) {
 		for(Item i: items) {
 			if(i.getName() == itemCheck)
@@ -131,7 +136,7 @@ public class DataReader {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Print function for debug purposes.
 	 * Simply print data received from file.
@@ -141,25 +146,25 @@ public class DataReader {
 		for(Item i : items) {
 			System.out.println("\t" + i.getName() + " " + i.getWeight());
 		}
-		
+
 		System.out.println("Bag: ");
 		for(Bag b : bags) {
 			System.out.println("\t" + b.getName() + " " + b.getWeightCapacity());
 		}
-		
+
 		System.out.println("Min: " + fitLimitMin);
 		System.out.println("Max: " + fitLimitMax);
 	}
+	
+	public boolean noDoubles(ArrayList<Assignment> assignments) {
+		Set<Item> itemsAssigned = new HashSet<Item>();
+		for(Assignment a : assignments) {
+			itemsAssigned.add(a.getItem());
+		}
+		
+		return (itemsAssigned.size() == assignments.size());
+	}
 
-	public static int getFitLimitMin() {
-		return fitLimitMin;
-	}
-	
-	public static int getFitLimitMax() {
-		return fitLimitMax;
-	}
-	
-	//MUST ADD A CHECK FOR OVER 100 PERCENT AND OVER MAX
 	public boolean checkValidity(ArrayList<Assignment> assignments) {
 		if(!underMaxLimit(assignments))
 			return false;
@@ -167,9 +172,19 @@ public class DataReader {
 			if(!c.isValid(assignments))
 				return false;
 		}
+		if(!noDoubles(assignments))
+			return false;
 		return true;
 	}
 	
+	public boolean overMinLimit(ArrayList<Assignment> assignments) {
+		for(Assignment a: assignments) {
+			if(a.getBag().getItemCount() < fitLimitMin || a.getBag().getCurrentWeight() < 0.9 * a.getBag().getWeightCapacity())
+				return false;
+		}
+		return true;
+	}
+
 	public boolean underMaxLimit(ArrayList<Assignment> assignments) {
 		for(Assignment a: assignments) {
 			if(a.getBag().getItemCount() > fitLimitMax || a.getBag().getCurrentWeight() > a.getBag().getWeightCapacity())
@@ -177,7 +192,7 @@ public class DataReader {
 		}
 		return true;
 	}
-	
+
 	public ArrayList<Item> cloneItems() {
 		ArrayList<Item> cloneList = new ArrayList<Item>();
 		for(Item i: items) {
@@ -185,21 +200,21 @@ public class DataReader {
 		}
 		return cloneList;
 	}
-	
-	public ArrayList<Assignment> backTrackRunner() {
-		return backTrack(new ArrayList<Assignment>());
+
+	public ArrayList<Assignment> backTrackRunner() {		
+		ArrayList<Assignment> results = backTrack(new ArrayList<Assignment>());
+
+		if(results == null)
+			return new ArrayList<Assignment>();
+		return results;
 	}
-	
+
 	public boolean isComplete(ArrayList<Assignment> assignments) {
-		if(selectUnassignedItem(assignments) != null)
-			System.out.println("next item: " + selectUnassignedItem(assignments).getName());
-		else
-			System.out.println("next item: " + selectUnassignedItem(assignments));
-		System.out.println("checkValidity: " + checkValidity(assignments));
-		return (checkValidity(assignments) && selectUnassignedItem(assignments) == null);
+		return (checkValidity(assignments) && overMinLimit(assignments) && selectUnassignedItem(assignments) == null);
 	}
-	
+
 	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {
+		
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
@@ -209,8 +224,12 @@ public class DataReader {
 			a.getBag().incrementWeight(a.getItem().getWeight());
 			a.getBag().incrementCount();
 			if(checkValidity(assignments)) {
-				backTrack(assignments);
-				break;
+				ArrayList<Assignment> results = backTrack(assignments);
+				if(results == null) {
+					a.getBag().decrementWeight(a.getItem().getWeight());
+					a.getBag().decrementCount();
+					assignments.remove(a);
+				}
 			}
 			else {
 				a.getBag().decrementWeight(a.getItem().getWeight());
@@ -218,12 +237,13 @@ public class DataReader {
 				assignments.remove(a);
 			}
 		}
+		
 		if(isComplete(assignments))
 			return assignments;
-		else
-			return new ArrayList<Assignment>();
+		
+		return null;
 	}
-	
+
 	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
 		ArrayList<Item> totalItems = cloneItems();
 		for(Assignment a: assignments) {
@@ -234,19 +254,28 @@ public class DataReader {
 		else
 			return totalItems.get(0);
 	}
-	
+
 	public String printAssignments(ArrayList<Assignment> assignments) {
 		String output = "";
-		
+
 		if(assignments.isEmpty())
 			return "NO ASSIGNMENTS";
-		for(Assignment a : assignments) {
-			output += a.getItem().getName() + " -> " + a.getBag().getName() + "\n";
+
+		for(Bag b : bags) {
+			output += "\n\n" + b.getName() + " ";
+			for(Assignment a : assignments) {
+				if(a.getBag().getName() == b.getName()) {
+					output += a.getItem().getName() + " ";
+				}
+			}
+			
+			output += "\nNumber of items: " + b.getItemCount() + "\n"
+					+ "Weight: " + b.getCurrentWeight() + "/" + b.getWeightCapacity();
 		}
-		
+
 		return output;
 	}
-	
+
 	/*
 	 * Entry point of program.
 	 */
@@ -257,7 +286,7 @@ public class DataReader {
 		}
 
 		inputFile = args[0];
-		
+
 		DataReader dReader = new DataReader();
 		dReader.readData();
 		dReader.printData();

@@ -201,7 +201,7 @@ public class DataReader {
 			assignments.add(a);
 			if(checkValidity(assignments)) {
 				backTrack(assignments);
-				System.out.println("Valid Assignment");
+				break;
 			}
 			else 
 				assignments.remove(a);

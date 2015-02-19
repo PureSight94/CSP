@@ -544,7 +544,7 @@ public class DataReader {
 		// Calculates and prints out the solution, formatted correctly.
 		System.out.println(  "\n*****************************************");
 		System.out.println(    "*          Assignment Solution          *");
-		System.out.println(    "*****************************************\n");
+		System.out.println(    "*****************************************");
 		System.out.println(    dReader.printAssignments(solution));
 		
 		// Calculate average times it takes to run our program over the file.
@@ -570,7 +570,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "BT: " + averageTime + " nsec\n";
+		table += "BT only           : \t" + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		/*
@@ -583,7 +583,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "BT with heuristics: " + averageTime + " nsec\n";
+		table += "BT with heuristics: \t" + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		/*
@@ -596,7 +596,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "FC with heuristics: " + averageTime + " nsec\n";
+		table += "FC with heuristics: \t" + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		// Print table of times to standard out.

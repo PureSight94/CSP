@@ -19,7 +19,10 @@ public class ExclusiveUnary implements IConstraint {
 		this.bags = bags;
 	}
 	
-	@Override
+	/*
+	 * Check this constraint and returns false only when the 
+	 * specified item is in the specified bag.
+	 */
 	public boolean isValid(ArrayList<Assignment> assignments) {
 		for(Assignment a : assignments) {
 			if(a.getItem().equals(item)) {

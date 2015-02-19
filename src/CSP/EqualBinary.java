@@ -12,7 +12,11 @@ public class EqualBinary implements IConstraint {
 		item2 = i2;
 	}
 	
-	
+	/*
+	 * Checks this constraint and returns false only if the 
+	 * two items specified in the constraint are both assigned
+	 * and are not in the same bag
+	 */
 	public boolean isValid(ArrayList<Assignment> assignments) {
 		Bag b1 = null;
 		Bag b2 = null;

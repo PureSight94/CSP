@@ -12,7 +12,11 @@ public class NotEqualBinary implements IConstraint {
 		item2 = i2;
 	}
 	
-	@Override
+	/*
+	 * Checks this constraint and returns false only if
+	 * the two items specified in the constraint are in
+	 * the same bag.
+	 */
 	public boolean isValid(ArrayList<Assignment> assignments) {
 		int seenCount = 0;
 		Bag b1 = null;

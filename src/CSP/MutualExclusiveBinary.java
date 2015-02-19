@@ -16,7 +16,11 @@ public class MutualExclusiveBinary implements IConstraint {
 		bag2 = b2;
 	}
 	
-	@Override
+	/*
+	 * Check this constraint and returns false only if both items are
+	 * assigned and item1 is in Bag1 and item2 is in Bag2 or vice versa.
+	 * Where Item1, Item2, Bag1, and Bag2 are specified in the constraint
+	 */
 	public boolean isValid(ArrayList<Assignment> assignments) {
 		Bag b1 = null;
 		Bag b2 = null;

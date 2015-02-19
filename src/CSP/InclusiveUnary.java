@@ -1,6 +1,3 @@
-/**
- * 
- */
 package CSP;
 
 import java.util.ArrayList;
@@ -19,7 +16,10 @@ public class InclusiveUnary implements IConstraint {
 		this.allowedBags = bags;
 	}
 	
-	@Override
+	/*
+	 * Check this constraint and returns false only when the specified item
+	 * is assigned and not in the specified bag.
+	 */
 	public boolean isValid(ArrayList<Assignment> assignments) {
 		for(Assignment a : assignments) {
 			if(a.getItem().equals(item)) {

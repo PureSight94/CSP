@@ -570,7 +570,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "BT: " + averageTime + "ms\n";
+		table += "BT: " + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		/*
@@ -583,7 +583,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "BT with heuristics: " + averageTime + "ms\n";
+		table += "BT with heuristics: " + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		/*
@@ -596,7 +596,7 @@ public class DataReader {
 			totalTime += end - start;
 		}
 		averageTime = totalTime/5;
-		table += "FC with heuristics: " + averageTime + "ms\n";
+		table += "FC with heuristics: " + averageTime + " nsec\n";
 		totalTime = 0;
 		
 		// Print table of times to standard out.

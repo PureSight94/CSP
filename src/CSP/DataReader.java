@@ -341,17 +341,24 @@ public class DataReader {
 		return results;
 	}
 	
+	/*
+	 * Backtrack function without heuristics of forward checking.
+	 */
 	public ArrayList<Assignment> backTrack(ArrayList<Assignment> assignments) {	
 		Item i = selectUnassignedItem(assignments);
 		if(i == null)
 			return new ArrayList<Assignment>();
+		
 		for(Bag b: allBags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
 			a.getBag().incrementWeight(a.getItem().getWeight());
 			a.getBag().incrementCount();
 			if(checkValidity(assignments)) {
+				
+				// Recursive call
 				ArrayList<Assignment> results = backTrack(assignments);
+				
 				if(results == null) {
 					a.getBag().decrementWeight(a.getItem().getWeight());
 					a.getBag().decrementCount();
@@ -371,18 +378,30 @@ public class DataReader {
 		return null;
 	}
 
+	/*
+	 * Backtrack function with heuristics.
+	 * Almost identical to previous function, but uses constraints when deciding
+	 * next unassigned item, and the order of the bags.
+	 */
 	public ArrayList<Assignment> backTrackHeuristics(ArrayList<Assignment> assignments) {
 		Item i = minimumRemainingValues(assignments);
+		
 		if(i == null)
 			return new ArrayList<Assignment>();
+		
+		// Order the bags so least constraining bags are first.
 		ArrayList<Bag> orderedBags = leastConstrainingValue(allBags);
+		
 		for(Bag b: orderedBags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
 			a.getBag().incrementWeight(a.getItem().getWeight());
 			a.getBag().incrementCount();
 			if(checkValidity(assignments)) {
+				
+				// Recursive call
 				ArrayList<Assignment> results = backTrack(assignments);
+				
 				if(results == null) {
 					a.getBag().decrementWeight(a.getItem().getWeight());
 					a.getBag().decrementCount();
@@ -402,20 +421,33 @@ public class DataReader {
 		return null;
 	}
 	
+	/*
+	 * Backtrack function with heuristics and forward checking.
+	 * Almost identical to previous function, but uses uses forward checking
+	 * to prune the list of bags to check.
+	 */
 	public ArrayList<Assignment> backTrackFC(ArrayList<Assignment> assignments) {
 		Item i = minimumRemainingValues(assignments);
+		
 		if(i == null)
 			return new ArrayList<Assignment>();
 		
+		// Prune bags that are not valid
 		ArrayList<Bag> possibleBags = i.getPossibleBags();
+		
+		// Order bags so that the least constraining bags are first
 		ArrayList<Bag> orderedBags = leastConstrainingValue(possibleBags);
+		
 		for(Bag b: orderedBags) {
 			Assignment a = new Assignment(b, i);
 			assignments.add(a);
 			a.getBag().incrementWeight(a.getItem().getWeight());
 			a.getBag().incrementCount();
 			if(checkValidity(assignments)) {
+				
+				// Recursive call
 				ArrayList<Assignment> results = backTrack(assignments);
+				
 				if(results == null) {
 					a.getBag().decrementWeight(a.getItem().getWeight());
 					a.getBag().decrementCount();

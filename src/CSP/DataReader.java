@@ -29,8 +29,12 @@ public class DataReader {
 	}
 
 	ArrayList<IConstraint> constraintList = new ArrayList<IConstraint>();
+	
 	/*
 	 * Process and parse input file.
+	 * Creates all Item and Bag objects from the input file.
+	 * Parses min and max fit limits for the bags.
+	 * Creates a list of IConstraints from the information from the input file.
 	 */
 	public void readData() {
 		BufferedReader br;
@@ -126,17 +130,9 @@ public class DataReader {
 		}
 	}
 	
-	public void printPossibleLocations() {
-		System.out.println("----------------------");
-		for(Item i : allItems) {
-			System.out.println(i.getName());
-			for(Bag b : i.getPossibleBags()) {
-				System.out.println("     " + b.getName());
-			}
-		}
-		System.out.println("----------------------");
-	}
-
+	/*
+	 * Return a list of bags equal to the given names.
+	 */
 	public ArrayList<Bag> getBagsFromLine(String splitLine[]) {
 		ArrayList<Bag> bags = new ArrayList<Bag>();
 		for(int j = 1; j < splitLine.length; j++) {
@@ -146,7 +142,9 @@ public class DataReader {
 		return bags;
 	}
 
-	//Gets the given bag from the bag list by same name
+	/*
+	 * Gets the given bag from the bag list of the given name.
+	 */
 	public Bag getBagByName(char bagCheck) {
 		for(Bag b: allBags) {
 			if(b.getName() == bagCheck)
@@ -182,6 +180,10 @@ public class DataReader {
 		System.out.println("Max: " + fitLimitMax);
 	}
 	
+	/*
+	 * Make sure that no item is in two bags at one time.
+	 * Returns True if valid, False otherwise.
+	 */
 	public boolean noDoubles(ArrayList<Assignment> assignments) {
 		Set<Item> itemsAssigned = new HashSet<Item>();
 		for(Assignment a : assignments) {
@@ -191,6 +193,11 @@ public class DataReader {
 		return (itemsAssigned.size() == assignments.size());
 	}
 
+	/*
+	 * Check if a set of assignments is valid against all constraints.
+	 * Also checks if all bag's weights are below the maximum limit.
+	 * Makes sure no item is in two bags at once.
+	 */
 	public boolean checkValidity(ArrayList<Assignment> assignments) {
 		if(!underMaxLimit())
 			return false;
@@ -203,6 +210,11 @@ public class DataReader {
 		return true;
 	}
 	
+	/*
+	 * Check if all bag's weights over the minimum limit.
+	 * Also check if all bag's weight is at least 90% of their capacity.
+	 * Return True if valid, False otherwise.
+	 */
 	public boolean overMinLimit() {
 		for(Bag b: allBags) {
 			if(b.getItemCount() < fitLimitMin || b.getCurrentWeight() < 0.9 * b.getWeightCapacity())
@@ -210,7 +222,12 @@ public class DataReader {
 		}
 		return true;
 	}
-
+	
+	/*
+	 * Check if all bag's weights are under the maximum limit.
+	 * Also check if all bags don't have more than the max number of items in each.
+	 * Return True if valid, False otherwise.
+	 */
 	public boolean underMaxLimit() {
 		for(Bag b: allBags) {
 			if(b.getItemCount() > fitLimitMax || b.getCurrentWeight() > b.getWeightCapacity()) {
@@ -220,6 +237,9 @@ public class DataReader {
 		return true;
 	}
 
+	/*
+	 * Returns a copy of the given list of bags.
+	 */
 	public ArrayList<Bag> cloneBags(ArrayList<Bag> bagListToClone) {
 		ArrayList<Bag> cloneBags = new ArrayList<Bag>();
 		for(Bag b: bagListToClone) {
@@ -228,6 +248,9 @@ public class DataReader {
 		return cloneBags;
 	}
 	
+	/*
+	 * Returns a copy of the list of all the items.
+	 */
 	public ArrayList<Item> cloneItems() {
 		ArrayList<Item> cloneList = new ArrayList<Item>();
 		for(Item i: allItems) {
@@ -235,22 +258,35 @@ public class DataReader {
 		}
 		return cloneList;
 	}
-
+	
+	/*
+	 * Check to see if a list of assignments meets the requirements.
+	 * Returns True if the list of assignments is a valid solution,
+	 * False otherwise.
+	 */
 	public boolean isComplete(ArrayList<Assignment> assignments) {
-		boolean isComp = (checkValidity(assignments) && overMinLimit() && selectUnassignedItem(assignments) == null);
-		return isComp;
+		boolean isValid = checkValidity(assignments);
+		boolean isOverMinLimit = overMinLimit(); 
+		boolean noUnassignedItems = (selectUnassignedItem(assignments) == null);
+		
+		return isValid && isOverMinLimit && noUnassignedItems;
 	}
 
-	
-	//Order the list of Bags in order of ones that rule out the fewest choices for neighboring variables
-	//The bag that leaves the most open space left
+	/*
+	 * Takes in a list of bags and returns a new list of bags
+	 * in order of most open space to least open space.
+	 */
 	public ArrayList<Bag> leastConstrainingValue(ArrayList<Bag> bagList) {
 		ArrayList<Bag> orderedBags = cloneBags(bagList);
 		Collections.sort(orderedBags);
+		
 		return orderedBags;
 	}
 
-	
+	/*
+	 * Returns the unassigned item with the least number of valid possible bags.
+	 * If there is a tie, it returns the item with the largest weight.
+	 */
 	public Item minimumRemainingValues(ArrayList<Assignment> assignments) {
 		ArrayList<Item> totalItems = cloneItems();
 		for(Assignment a: assignments) {
@@ -262,23 +298,36 @@ public class DataReader {
 		return totalItems.get(0);
 	}
 	
+	/*
+	 * Clear all information from each bag.
+	 * Allows you to run the program multiple times with the same data.
+	 */
 	public void reset() {
 		for(Bag b: allBags) {
 			b.clear();
 		}
 	}
 	
+	/*
+	 * The backtrack function. This dispatches the correct version of the CSP
+	 * depending on if it is with the heuristics or forward checking.
+	 * Returns a list of assignments if a solution is found, and
+	 * returns an empty list if not found.
+	 */
 	public ArrayList<Assignment> backTrackRunner(int mode) {
 		ArrayList<Assignment> results;
 
 		switch(mode) {
 		case BT: 
+			// Backtracking alone
 			results = backTrack(new ArrayList<Assignment>());
 			break;
-		case BTWithHeuristics: 
+		case BTWithHeuristics:
+			// Backtracking with heuristics
 			results = backTrackHeuristics(new ArrayList<Assignment>());
 			break;
-		case FCWithHeuristics: 
+		case FCWithHeuristics:
+			// Forward checking with heuristics
 			results = backTrackFC(new ArrayList<Assignment>());
 			break;
 		default: 
@@ -386,6 +435,11 @@ public class DataReader {
 		return null;
 	}
 	
+	/*
+	 * Takes in a list of assignments and returns an unassigned item.
+	 * This is the basic version of the function, and does not include
+	 * the heuristics.
+	 */
 	public Item selectUnassignedItem(ArrayList<Assignment> assignments) {
 		ArrayList<Item> totalItems = cloneItems();
 		for(Assignment a: assignments) {
@@ -397,11 +451,24 @@ public class DataReader {
 			return totalItems.get(0);
 	}
 
+	/*
+	 * Takes in a list of Assignments, and returns a String representation
+	 * of the assignments. This is used as the main output of our program.
+	 * If there is no solution, "There is no such assignment."
+	 * 
+	 * An example of output:
+	 * 
+	 *      x A B C
+	 *      Number of items: 3
+	 *      Weight: 20/20
+	 *      Wasted capacity: 0
+	 *      
+	 */
 	public String printAssignments(ArrayList<Assignment> assignments) {
 		String output = "";
 
 		if(assignments.isEmpty())
-			return "There is no such assingment.";
+			return "There is no such assignment.";
 
 		for(Bag b : allBags) {
 			output += "\n" + b.getName() + " ";
@@ -417,6 +484,7 @@ public class DataReader {
 					+ "\n";
 		}
 		
+		// Reset weights and item counts in each bag.
 		reset();
 
 		return output;
@@ -426,20 +494,28 @@ public class DataReader {
 	 * Entry point of program.
 	 */
 	public static void main(String[] args) {
+		
+		// Print an error if the arguments are not correct.
 		if(args.length != 1) {
 			System.out.println("Incorrect number of command line arguments.");
 			System.exit(-1);
 		}
-
+		
+		// The input file path name
 		inputFile = args[0];
 
+		// Read in the file, parse the file, and calculate the solution using Forward Checking
 		DataReader dReader = new DataReader();
 		dReader.readData();
-		System.out.println();
-		System.out.println("*****************************************");
-		System.out.println("*          Assignment Solution          *");
-		System.out.println("*****************************************");
-		System.out.println(dReader.printAssignments(dReader.backTrackRunner(FCWithHeuristics)));
+		ArrayList<Assignment> solution = dReader.backTrackRunner(FCWithHeuristics);
+		
+		// Calculates and prints out the solution, formatted correctly.
+		System.out.println(  "\n*****************************************");
+		System.out.println(    "*          Assignment Solution          *");
+		System.out.println(    "*****************************************\n");
+		System.out.println(    dReader.printAssignments(solution));
+		
+		// Calculate average times it takes to run our program over the file.
 		System.out.println("\n\n*****************************************");
 		System.out.println(    "*   Running times (average of 5 runs)   *");
 		System.out.println(    "*****************************************\n");
@@ -450,6 +526,11 @@ public class DataReader {
 		long averageTime = 0;
 		String table = "";
 		
+		/*
+		 *  Runs CSP algorithm with BackTracking ONLY.
+		 *  Calculates the average time it took to run from 5 runs.
+		 *  Print results to standard out.
+		 */
 		for(int i = 0; i < 5; i++) {
 			start = System.nanoTime();
 			dReader.backTrackRunner(BT);
@@ -458,7 +539,11 @@ public class DataReader {
 		}
 		averageTime = totalTime/5;
 		table += "BT: " + averageTime + "ms\n";
+		totalTime = 0;
 		
+		/*
+		 * Runs CSP algorithm with BackTracking and heuristics (MRV and LCV).
+		 */
 		for(int i = 0; i < 5; i++) {
 			start = System.nanoTime();
 			dReader.backTrackRunner(BTWithHeuristics);
@@ -467,7 +552,11 @@ public class DataReader {
 		}
 		averageTime = totalTime/5;
 		table += "BT with heuristics: " + averageTime + "ms\n";
+		totalTime = 0;
 		
+		/*
+		 * Runs CSP algorithm with ForwardChecking and heuristics (MRV and LCV).
+		 */
 		for(int i = 0; i < 5; i++) {
 			start = System.nanoTime();
 			dReader.backTrackRunner(FCWithHeuristics);
@@ -476,7 +565,9 @@ public class DataReader {
 		}
 		averageTime = totalTime/5;
 		table += "FC with heuristics: " + averageTime + "ms\n";
+		totalTime = 0;
 		
+		// Print table of times to standard out.
 		System.out.println(table);
 	}
 }
